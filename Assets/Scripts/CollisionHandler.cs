@@ -28,12 +28,16 @@ public class CollisionHandler : MonoBehaviour
     {
         currentSpeed = myRigidbody.velocity;
 
-        if (healthScript == null) return;
         if (hasCollided)
         {
-            float deltaSpeed = Mathf.Abs(speedBeforeCollision.magnitude - currentSpeed.magnitude); Debug.Log("Speed difference before-after collision = " + deltaSpeed);
-            healthScript.Damage(deltaSpeed);
             hasCollided = false;
+
+            float deltaSpeed = Mathf.Abs(speedBeforeCollision.magnitude - currentSpeed.magnitude); Debug.Log("Speed difference before-after collision = " + deltaSpeed);
+
+            if (healthScript != null)
+            {
+                healthScript.Damage(deltaSpeed);
+            }
         }
     }
 
@@ -42,10 +46,10 @@ public class CollisionHandler : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Player": //Debug.Log(gameObject.name + " has collided with another player: " + other.gameObject.name + "." );
-                AnalyseCollision();
+                ProcessPhysicalCollision();
                 break;
             case "Ground": //Debug.Log(gameObject.name + " has collided with the ground: " + other.gameObject.name + ".");
-                AnalyseCollision();
+                ProcessPhysicalCollision();
                 break;
             case "Finish":
                 FinishSequence();
@@ -56,13 +60,12 @@ public class CollisionHandler : MonoBehaviour
                 break;
         }
     }
-
     void FinishSequence()
     {
         successParticles.Play();
         LoadNextLevel();
     }
-    private void LoadNextLevel() // Temporary function for the finish sequence
+    void LoadNextLevel() // Temporary function for the finish sequence
     {
         int nextSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1; //Debug.Log("Next Scene Index = " + nextSceneIndex);
         int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings; //Debug.Log("Scene count = " + sceneCount);
@@ -72,8 +75,7 @@ public class CollisionHandler : MonoBehaviour
         }
         UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneIndex);
     }
-
-    void AnalyseCollision()
+    void ProcessPhysicalCollision()
     {
         speedBeforeCollision = currentSpeed;
         hasCollided = true;

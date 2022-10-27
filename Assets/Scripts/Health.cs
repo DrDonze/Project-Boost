@@ -7,7 +7,7 @@ public class Health : MonoBehaviour
 {
     [SerializeField] float hp;
     [SerializeField] float maxHP = 100f;
-    [SerializeField, Tooltip("In seconds")] float deathSequenceLength = 1f;
+    [SerializeField, Tooltip("In seconds")] float deathSequenceLength = 3f;
     [SerializeField] AudioClip deathClip;
     [SerializeField] ParticleSystem explosionParticles;
 
@@ -21,12 +21,10 @@ public class Health : MonoBehaviour
         movementScript = GetComponent<Movement>();
         audioSource = GetComponent<AudioSource>();
     }
-
     private void Start()
     {
         hp = maxHP;
     }
-
     public void Damage(float amount)
     {
         hp = Mathf.FloorToInt(hp - amount);
@@ -36,27 +34,28 @@ public class Health : MonoBehaviour
             if (isAlive) StartCoroutine(Death());
         }
     }
-
     IEnumerator Death()
     {
         isAlive = false;
 
-        if (movementScript != null)
-        {
-            movementScript.enabled = false;
-        }
+        DisableMovements();
 
         explosionParticles.Play();
 
         audioSource.PlayOneShot(deathClip);
 
-        // todo add particles effect upon death
-
         yield return new WaitForSeconds(deathSequenceLength);
+
         // todo add a respawn instead of reload
         ReloadLevel();
     }
-
+    private void DisableMovements()
+    {
+        if (movementScript != null)
+        {
+            movementScript.enabled = false;
+        }
+    }
     private static void ReloadLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
