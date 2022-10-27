@@ -7,6 +7,7 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] AudioClip impactClip;
     [SerializeField] float minSoundVolumeImpactSpeed = 0.5f;
     [SerializeField] float maxSoundVolumeImpactSpeed = 10f;
+    [SerializeField] ParticleSystem successParticles;
 
     Health healthScript;
     Rigidbody myRigidbody;
@@ -58,6 +59,7 @@ public class CollisionHandler : MonoBehaviour
 
     void FinishSequence()
     {
+        successParticles.Play();
         LoadNextLevel();
     }
     private void LoadNextLevel() // Temporary function for the finish sequence

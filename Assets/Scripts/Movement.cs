@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour
 {
     [SerializeField] float mainThrustPower = 1250f;
     [SerializeField] GameObject mainThrustObject;
+    [SerializeField] ParticleSystem mainThrustParticles, leftThrustParticles, rightThrustParticles;
     [SerializeField] float rotationThrustPower = 300f;
     [SerializeField] float mass = 1f;
     [SerializeField] float drag = 0.5f;
@@ -61,8 +62,10 @@ public class Movement : MonoBehaviour
     void ProcessRotation()
     {
         if (leftKey && rightKey) 
-        { 
+        {
             //Debug.Log("Both left and right key pressed, not rotating");
+            rightThrustParticles.Stop();
+            leftThrustParticles.Stop();
             return; 
         }
 
@@ -70,12 +73,22 @@ public class Movement : MonoBehaviour
         {
             //Debug.Log("Pressed Left - Rotating");
             RotateRigidbody(new Vector3(0, 0, rotationThrustPower));
+            rightThrustParticles.Play();
+        }
+        else
+        {
+            rightThrustParticles.Stop();
         }
 
         if (rightKey)
         {
             //Debug.Log("Pressed Right - Rotating");
             RotateRigidbody(new Vector3(0, 0, -1 * rotationThrustPower));
+            leftThrustParticles.Play();
+        }
+        else
+        {
+            leftThrustParticles.Stop();
         }
     }
 
@@ -102,6 +115,8 @@ public class Movement : MonoBehaviour
             {
                 audioSource.volume += volumeIncreaseSpeed * Time.deltaTime;
             }
+
+            mainThrustParticles.Play();
         }
         else
         {
@@ -113,6 +128,8 @@ public class Movement : MonoBehaviour
             {
                 audioSource.volume -= volumeDecreaseSpeed * Time.deltaTime;
             }
+
+            mainThrustParticles.Stop();
         }
     }
 

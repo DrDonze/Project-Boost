@@ -9,6 +9,7 @@ public class Health : MonoBehaviour
     [SerializeField] float maxHP = 100f;
     [SerializeField, Tooltip("In seconds")] float deathSequenceLength = 1f;
     [SerializeField] AudioClip deathClip;
+    [SerializeField] ParticleSystem explosionParticles;
 
     Movement movementScript;
     AudioSource audioSource;
@@ -44,6 +45,8 @@ public class Health : MonoBehaviour
         {
             movementScript.enabled = false;
         }
+
+        explosionParticles.Play();
 
         audioSource.PlayOneShot(deathClip);
 
