@@ -82,7 +82,7 @@ public class CollisionHandler : MonoBehaviour
     private void PlayImpactSound(float speedBeforeCollision)
     {
         float speedRatio = speedBeforeCollision / maxSoundVolumeImpactSpeed;
-        float impactSoundVolume = Mathf.Clamp(speedRatio, minSoundVolumeImpactSpeed, maxSoundVolumeImpactSpeed);
+        float impactSoundVolume = Mathf.Clamp(speedRatio, minSoundVolumeImpactSpeed, 1);
 
         audioSource.PlayOneShot(impactClip, impactSoundVolume);
     }
