@@ -8,11 +8,17 @@ public class Health : MonoBehaviour
     [SerializeField] float hp;
     [SerializeField] float maxHP = 100f;
     [SerializeField, Tooltip("In seconds")] float deathSequenceLength = 1f;
+    [SerializeField] AudioClip deathClip;
+
     Movement movementScript;
+    AudioSource audioSource;
+
+    bool isAlive = true;
 
     private void Awake()
     {
         movementScript = GetComponent<Movement>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -26,18 +32,21 @@ public class Health : MonoBehaviour
         if (hp <= 0)
         {
             hp = 0;
-            StartCoroutine(Death());
+            if (isAlive) StartCoroutine(Death());
         }
     }
 
     IEnumerator Death()
     {
+        isAlive = false;
+
         if (movementScript != null)
         {
             movementScript.enabled = false;
         }
 
-        // todo add SFX upon death
+        audioSource.PlayOneShot(deathClip);
+
         // todo add particles effect upon death
 
         yield return new WaitForSeconds(deathSequenceLength);

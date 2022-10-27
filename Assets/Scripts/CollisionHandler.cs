@@ -4,8 +4,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] AudioClip impactClip;
+    [SerializeField] float minSoundVolumeImpactSpeed = 0.5f;
+    [SerializeField] float maxSoundVolumeImpactSpeed = 10f;
+
     Health healthScript;
     Rigidbody myRigidbody;
+    AudioSource audioSource;
+
     bool hasCollided = false;
     Vector3 currentSpeed = Vector3.zero;
     Vector3 speedBeforeCollision;
@@ -14,6 +20,7 @@ public class CollisionHandler : MonoBehaviour
     {
         healthScript = GetComponent<Health>();
         myRigidbody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -68,7 +75,15 @@ public class CollisionHandler : MonoBehaviour
     {
         speedBeforeCollision = currentSpeed;
         hasCollided = true;
-
+        PlayImpactSound(speedBeforeCollision.magnitude);
         //TODO this system doesn't take into account for example if you're not moving on a wall and some ship collide you. You should take damage but your movement difference would be almost none.
+    }
+
+    private void PlayImpactSound(float speedBeforeCollision)
+    {
+        float speedRatio = speedBeforeCollision / maxSoundVolumeImpactSpeed;
+        float impactSoundVolume = Mathf.Clamp(speedRatio, minSoundVolumeImpactSpeed, maxSoundVolumeImpactSpeed);
+
+        audioSource.PlayOneShot(impactClip, impactSoundVolume);
     }
 }

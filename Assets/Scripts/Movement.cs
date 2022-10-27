@@ -6,8 +6,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float mainThrust = 100f;
-    [SerializeField] float rotationThrust = 30f;
+    [SerializeField] float mainThrustPower = 1250f;
+    [SerializeField] GameObject mainThrustObject;
+    [SerializeField] float rotationThrustPower = 300f;
     [SerializeField] float mass = 1f;
     [SerializeField] float drag = 0.5f;
     [SerializeField] float angularDrag = 3f;
@@ -27,9 +28,24 @@ public class Movement : MonoBehaviour
     {
         SetRigidbody();
 
-        audioSource = GetComponent<AudioSource>();
+        audioSource = mainThrustObject.GetComponent<AudioSource>();
+    }
+    void Update()
+    {
+        ProcessInput();
+    }
+    private void FixedUpdate()
+    {
+        ProcessRotation();
+        ProcessThrust();
     }
 
+    void ProcessInput()
+    {
+        leftKey = Input.GetKey(KeyCode.A);
+        rightKey = Input.GetKey(KeyCode.D);
+        thrustKey = Input.GetKey(KeyCode.Space);
+    }
     private void SetRigidbody()
     {
         myRigidbody = GetComponent<Rigidbody>();
@@ -42,24 +58,6 @@ public class Movement : MonoBehaviour
         myRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    void Update()
-    {
-        ProcessInput();
-        ProcessThrust();
-        ProcessRotation();
-    }
-    void ProcessInput()
-    {
-        leftKey = Input.GetKey(KeyCode.A);
-        rightKey = Input.GetKey(KeyCode.D);
-        thrustKey = Input.GetKey(KeyCode.Space);
-    }
-
-    private void FixedUpdate()
-    {
-        ProcessRotation();
-        ProcessThrust();
-    }
     void ProcessRotation()
     {
         if (leftKey && rightKey) 
@@ -71,13 +69,13 @@ public class Movement : MonoBehaviour
         if (leftKey)
         {
             //Debug.Log("Pressed Left - Rotating");
-            RotateRigidbody(new Vector3(0, 0, rotationThrust));
+            RotateRigidbody(new Vector3(0, 0, rotationThrustPower));
         }
 
         if (rightKey)
         {
             //Debug.Log("Pressed Right - Rotating");
-            RotateRigidbody(new Vector3(0, 0, -1 * rotationThrust));
+            RotateRigidbody(new Vector3(0, 0, -1 * rotationThrustPower));
         }
     }
 
@@ -93,7 +91,7 @@ public class Movement : MonoBehaviour
         if (thrustKey)
         {
             //Debug.Log("Pressed SPACE - Thrusting");
-            myRigidbody.AddRelativeForce(mainThrust * Vector3.up * Time.fixedDeltaTime);
+            myRigidbody.AddRelativeForce(mainThrustPower * Vector3.up * Time.fixedDeltaTime);
 
             if (!audioSource.isPlaying)
             {
