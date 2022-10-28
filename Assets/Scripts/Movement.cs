@@ -9,6 +9,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float mainThrustPower = 1250f;
     [SerializeField] float rotationThrustPower = 300f;
     [SerializeField] GameObject mainThrustObject;
+    [SerializeField] Light maintThrustLight;
     [SerializeField] ParticleSystem mainThrustParticles, leftThrustParticles, rightThrustParticles;
     [SerializeField] float mass = 1f;
     [SerializeField] float drag = 0.5f;
@@ -16,6 +17,9 @@ public class Movement : MonoBehaviour
     [SerializeField] float mainThrustSoundStartVolume = 0.3f;
     [SerializeField] float volumeIncreaseSpeed = 1f;
     [SerializeField] float volumeDecreaseSpeed = 5f;
+    [SerializeField] float maxMainThrustLightPower = 50f;
+    [SerializeField] float mainThrustLightAcceleration = 25f;
+    [SerializeField] float mainThrustLightDeceleration = 50f;
 
     Rigidbody myRigidbody;
     AudioSource audioSource;
@@ -124,6 +128,8 @@ public class Movement : MonoBehaviour
         }
 
         mainThrustParticles.Play();
+
+        maintThrustLight.intensity = Mathf.Min(maintThrustLight.intensity + (mainThrustLightAcceleration * Time.fixedDeltaTime), maxMainThrustLightPower);
     }
     void StopMainThrust()
     {
@@ -137,5 +143,7 @@ public class Movement : MonoBehaviour
         }
 
         mainThrustParticles.Stop();
+
+        maintThrustLight.intensity = Mathf.Max(maintThrustLight.intensity - (mainThrustLightDeceleration * Time.fixedDeltaTime), 0);
     }
 }
