@@ -35,7 +35,6 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         ProcessRotation();
-        ProcessThrust();
     }
     void SetRigidbody()
     {
@@ -59,11 +58,16 @@ public class Movement : MonoBehaviour
         if (leftKey && rightKey) 
         {
             //Debug.Log("Both left and right key pressed, not rotating");
-            rightThrustParticles.Stop();
-            leftThrustParticles.Stop();
+            rightThrustParticles.Play();
+            leftThrustParticles.Play();
+            ActivateMainThrust();
             return; 
         }
-
+        else
+        {
+            StopMainThrust();
+        }
+        
         if (leftKey)
         {
             RotateLeft();
